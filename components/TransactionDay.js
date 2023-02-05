@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
+import Colors from "../constants/colors";
 import NewTransaction from "./NewTransaction";
 
 export default function TransactionDay({dateDay, dayName, monthYear}) {
@@ -17,7 +18,7 @@ export default function TransactionDay({dateDay, dayName, monthYear}) {
       </View>
       <NewTransaction category="Entertainment" note="spotify" price="15.75"/>
       <NewTransaction category="Food" note="pide" price="45.99" />
-      <NewTransaction category="Food" note="pide" price="45.99" />
+      <NewTransaction category="Transportation" note="bursa-istanbul bilet" price="650" />
 
     </View>
   );
@@ -25,13 +26,12 @@ export default function TransactionDay({dateDay, dayName, monthYear}) {
 
 const styles = StyleSheet.create({
   dayContainer: {
-    backgroundColor: "#1b2942",
+    backgroundColor: Colors.primaryBlue,
     width: "100%",
     marginBottom: 12
   },
   overviewContainer: {
-    borderBottomColor: "#172133",
-    backgroundColor: "#1b2942",
+    borderBottomColor: Colors.borderBlue,
     borderWidth: 1,
     height: 50,
     flexDirection: "row",
@@ -68,10 +68,10 @@ const styles = StyleSheet.create({
     flex: 1
   },
   incomeText: {
-    color:"#ADD8E6",
+    color: Colors.incomeBlue,
     marginLeft: 16
   },
   expenseText: {
-    color:"red"
+    color: Colors.expenseRed
   }
 });

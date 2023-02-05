@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import Colors from "../constants/colors";
 
 export default function MoneyContainer() {
   return (
@@ -27,10 +28,10 @@ const styles = StyleSheet.create({
     color: "white",
   },
   incomeAmount: {
-    color: "#ADD8E6",
+    color: Colors.incomeBlue,
   },
   expenseAmount: {
-    color: "red",
+    color: Colors.expenseRed,
   },
   calculationContainer: {
     width: "100%",

@@ -1,9 +1,9 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
 import TransactionScreen from "./screens/TransactionScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AddTransactionScreen from "./screens/AddTransactionScreen";
+import Colors from "./constants/colors";
 
 const Stack = createNativeStackNavigator();
 
@@ -14,9 +14,9 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
-            headerStyle: { backgroundColor: "#152238" },
+            headerStyle: { backgroundColor: Colors.secondaryBlue },
             headerTintColor: "white",
-            contentStyle: { backgroundColor: "#152238" },
+            contentStyle: { backgroundColor: Colors.secondaryBlue },
           }}
         >
           <Stack.Screen

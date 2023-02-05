@@ -16,4 +16,3 @@ export default function TransactionScreen({navigation}) {
   );
 }
 
-const styles = StyleSheet.create({});

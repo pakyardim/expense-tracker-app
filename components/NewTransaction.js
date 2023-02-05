@@ -20,13 +20,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
     },
     category: {
-        flex: 1,
+        flex: 2,
         color: "gray",
     },
     detailTitle: {
-        flex: 2,
+        flex: 3,
         color: "white",
-        marginLeft: 8,
     },
     transaction: {
         flex: 1,
