@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TextBase, View } from 'react-native'
 import React from 'react'
 
-export default function NewTransaction({category, note, price}) {
+export default function NewTransaction({category, note, price, isExpense}) {
   return (
     <View style={styles.detailContainer}>
         <Text style={styles.category}>{category}</Text>

@@ -1,8 +1,16 @@
 import { StyleSheet, Text, View, Pressable } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import Colors from "../../constants/colors";
+import { SingleTransactionContext } from "../../context/singleTransactionContext";
 
 export default function Category({ title, onPress }) {
+  const categoryChange = useContext(SingleTransactionContext).changeCategory;
+
+  function handlePress() {
+    categoryChange(title);
+    onPress();
+  }
+
   return (
     <View style={styles.gridItem}>
       <Pressable
@@ -11,9 +19,9 @@ export default function Category({ title, onPress }) {
           styles.button,
           pressed ? styles.buttonPressed : null,
         ]}
-        onPress={onPress}
+        onPress={handlePress}
       >
-          <Text style={styles.title}>{title}</Text>
+        <Text style={styles.title}>{title}</Text>
       </Pressable>
     </View>
   );
@@ -37,7 +45,7 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   buttonPressed: {
     opacity: 0.5,
@@ -45,6 +53,6 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: "bold",
     fontSize: 12,
-    color: "white"
+    color: "white",
   },
 });

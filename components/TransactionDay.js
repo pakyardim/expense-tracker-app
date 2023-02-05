@@ -1,8 +1,13 @@
+import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Colors from "../constants/colors";
 import NewTransaction from "./NewTransaction";
 
-export default function TransactionDay({dateDay, dayName, monthYear}) {
+
+export default function TransactionDay({dateDay, dayName, monthYear, price, isExpense}) {
+  const [transactions, setTransactions] = useState([]);
+
+  
   return (
     <View style={styles.dayContainer}>
       <View style={styles.overviewContainer}>
@@ -16,9 +21,9 @@ export default function TransactionDay({dateDay, dayName, monthYear}) {
           <Text style={styles.expenseText}>₺ 31.23</Text>
         </View>
       </View>
-      <NewTransaction category="Entertainment" note="spotify" price="15.75"/>
-      <NewTransaction category="Food" note="pide" price="45.99" />
-      <NewTransaction category="Transportation" note="bursa-istanbul bilet" price="650" />
+      <NewTransaction category="Entertainment" note="spotify" price="15.75" isExpense={true}/>
+      <NewTransaction category="Food" note="pide" price="45.99" isExpense={true}/>
+      <NewTransaction category="Transportation" note="bursa-istanbul bilet" price="650" isExpense={false}/>
 
     </View>
   );

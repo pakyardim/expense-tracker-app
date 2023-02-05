@@ -6,12 +6,29 @@ import {
   TextInput,
   Pressable,
 } from "react-native";
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState, useContext, useEffect } from "react";
 import dateFormatter from "../functions/dateFormatter";
 import CategoriesModal from "../components/categories/CategoriesModal";
+import { SingleTransactionContext } from "../context/singleTransactionContext";
 
 export default function AddTransactionScreen({ navigation }) {
   const [visible, setVisible] = useState(false);
+
+  const {
+    date,
+    category,
+    amount,
+    isExpense,
+    note,
+    changeDate,
+    changeCategory,
+    changeNote,
+    setExpense,
+    setIncome,
+    changeAmount,
+    updateTransactionHistory,
+  } = useContext(SingleTransactionContext);
+
 
   const [selectedOptions, setSelectedOptions] = useState([
     { id: 0, value: null },
@@ -21,12 +38,29 @@ export default function AddTransactionScreen({ navigation }) {
   const today = new Date();
   const formattedToday = dateFormatter(today);
 
+  // function dateChanger(){
+  //   changeDate(formattedToday);
+  // }
+
   function openModal() {
     setVisible(true);
   }
 
   function closeModal() {
     setVisible(false);
+  }
+
+  function handleAmountChange(amount) {
+    changeAmount(amount);
+  }
+
+  function handleNoteChange(note) {
+    changeNote(note);
+  }
+
+  function handlePress(){
+    updateTransactionHistory(today, amount, isExpense, category, note);
+    navigation.goBack();
   }
 
   useLayoutEffect(() => {
@@ -48,24 +82,30 @@ export default function AddTransactionScreen({ navigation }) {
         </View>
         <View style={styles.inputColumn}>
           <Text style={styles.label}>Category</Text>
-          <Pressable style={styles.pressable} onPress={openModal} />
+          <Pressable style={styles.pressable} onPress={openModal}>
+            <Text style={styles.categoryText}>{category}</Text>
+          </Pressable>
         </View>
         <View style={styles.inputColumn}>
           <Text style={styles.label}>Amount</Text>
-          <TextInput style={styles.inputText} placeholder="sfdsdjg" />
+          <TextInput
+            style={styles.inputText}
+            onChangeText={handleAmountChange}
+            keyboardType="numeric"
+          />
         </View>
         <View style={styles.inputColumn}>
           <Text style={styles.label}>Note</Text>
-          <TextInput style={styles.inputText} placeholder="sfdsdjg" />
+          <TextInput style={styles.inputText} onChangeText={handleNoteChange}/>
         </View>
       </View>
-      <Button title="save" />
+      <Button title="save" onPress={handlePress}/>
       {visible && (
-          <CategoriesModal
-            visible={visible}
-            openModal={openModal}
-            closeModal={closeModal}
-          />
+        <CategoriesModal
+          visible={visible}
+          openModal={openModal}
+          closeModal={closeModal}
+        />
       )}
     </View>
   );
@@ -106,7 +146,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "gray",
     margin: 12,
-    height: 28,
+    height: 24,
   },
-  
+  categoryText: {
+    color: "white",
+  },
 });
