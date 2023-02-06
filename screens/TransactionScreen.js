@@ -1,15 +1,25 @@
 import { useContext, useState } from "react";
-import { Button, StyleSheet, FlatList, View } from "react-native";
+import { Button, StyleSheet, FlatList, View, Text } from "react-native";
 import MoneyContainer from "../components/MoneyContainer";
 import TransactionHeader from "../components/TransactionHeader";
 import { SingleTransactionContext } from "../context/singleTransactionContext";
-import { isSameDay } from "../functions/dateFormatter";
 import NewTransaction from "../components/NewTransaction";
 import Colors from "../constants/colors";
 
 export default function TransactionScreen({ navigation }) {
-  const { transactionDays, resetAll } =
-    useContext(SingleTransactionContext);
+  const { transactionDays, resetAll } = useContext(SingleTransactionContext);
+
+  if (transactionDays.length === 0) {
+    return (
+      <>
+        <MoneyContainer />
+        <View style={styles.noTransactionContainer}>
+          <Text style={styles.text}>You have no transactions yet.</Text>
+          <Button title="+" onPress={pressHandler} />
+        </View>
+      </>
+    );
+  }
 
   const renderTransactions = (transactions) => {
     return transactions.map((transaction) => {
@@ -28,7 +38,7 @@ export default function TransactionScreen({ navigation }) {
   function renderTransactionDays(itemData) {
     return (
       <View style={styles.dayContainer}>
-        <TransactionHeader date={itemData.item.date} />
+        <TransactionHeader date={itemData.item.date} fullDate={itemData.item.fullDate}/>
         {renderTransactions(itemData.item.transactions)}
       </View>
     );
@@ -53,6 +63,14 @@ export default function TransactionScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  noTransactionContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+  },
+  text:{
+    color: "white"
+  },
   dayContainer: {
     backgroundColor: Colors.primaryBlue,
     width: "100%",

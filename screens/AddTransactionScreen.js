@@ -11,9 +11,11 @@ import dateFormatter from "../functions/dateFormatter";
 import CategoriesModal from "../components/categories/CategoriesModal";
 import { SingleTransactionContext } from "../context/singleTransactionContext";
 import { intFormatter } from "../functions/dateFormatter";
+import Colors from "../constants/colors";
 
 export default function AddTransactionScreen({ navigation }) {
   const [visible, setVisible] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   const {
     category,
@@ -22,9 +24,10 @@ export default function AddTransactionScreen({ navigation }) {
     note,
     changeNote,
     changeAmount,
+    setExpense,
+    setIncome,
     updateTransactionHistory,
   } = useContext(SingleTransactionContext);
-
 
   // const [selectedOptions, setSelectedOptions] = useState([
   //   { id: 0, value: null },
@@ -51,22 +54,45 @@ export default function AddTransactionScreen({ navigation }) {
     changeNote(note);
   }
 
-  function handlePress(){
-    updateTransactionHistory(today, intFormattedToday, amount, isExpense, category, note);
+  function handlePress() {
+    updateTransactionHistory(
+      today,
+      intFormattedToday,
+      amount,
+      isExpense,
+      category,
+      note
+    );
     navigation.goBack();
+  }
+
+  function handleChangePress(title) {
+    if (title === "Income") {
+      setIncome();
+      return;
+    }
+    setExpense();
+  }
+
+  function handleFocus() {
+    setIsFocused(true);
+  }
+
+  function handleBlur() {
+    setIsFocused(false);
   }
 
   useLayoutEffect(() => {
     navigation.setOptions({
       title: isExpense ? "Expense" : "Income",
     });
-  }, [navigation]);
+  }, [isExpense]);
 
   return (
     <View style={styles.rootContainer}>
       <View style={styles.buttonContainer}>
-        <Button title="Income" />
-        <Button title="Expense" />
+        <Button title="Income" onPress={() => handleChangePress("Income")} />
+        <Button title="Expense" onPress={() => handleChangePress("Expense")} />
       </View>
       <View style={styles.inputContainer}>
         <View style={styles.inputColumn}>
@@ -75,24 +101,57 @@ export default function AddTransactionScreen({ navigation }) {
         </View>
         <View style={styles.inputColumn}>
           <Text style={styles.label}>Category</Text>
-          <Pressable style={styles.pressable} onPress={openModal}>
+          <Pressable
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            style={[
+              styles.pressable,
+              isFocused
+                ? isExpense
+                  ? styles.focusedExpenseInput
+                  : styles.focusedIncomeInput
+                : null,
+            ]}
+            onPress={openModal}
+          >
             <Text style={styles.categoryText}>{category}</Text>
           </Pressable>
         </View>
         <View style={styles.inputColumn}>
           <Text style={styles.label}>Amount</Text>
           <TextInput
-            style={styles.inputText}
+            onBlur={handleBlur}
+            onFocus={handleFocus}
+            style={[
+              styles.inputText,
+              isFocused
+                ? isExpense
+                  ? styles.focusedExpenseInput
+                  : styles.focusedIncomeInput
+                : null,
+            ]}
             onChangeText={handleAmountChange}
             keyboardType="numeric"
           />
         </View>
         <View style={styles.inputColumn}>
           <Text style={styles.label}>Note</Text>
-          <TextInput style={styles.inputText} onChangeText={handleNoteChange}/>
+          <TextInput
+            onBlur={handleBlur}
+            onFocus={handleFocus}
+            style={[
+              styles.inputText,
+              isFocused
+                ? isExpense
+                  ? styles.focusedExpenseInput
+                  : styles.focusedIncomeInput
+                : null,
+            ]}
+            onChangeText={handleNoteChange}
+          />
         </View>
       </View>
-      <Button title="save" onPress={handlePress}/>
+      <Button title="save" onPress={handlePress} />
       {visible && (
         <CategoriesModal
           visible={visible}
@@ -141,7 +200,19 @@ const styles = StyleSheet.create({
     margin: 12,
     height: 24,
   },
+  redPressable: {
+    borderBottomColor: "red",
+  },
+  bluePressable: {
+    borderBottomColor: "blue",
+  },
   categoryText: {
     color: "white",
+  },
+  focusedExpenseInput: {
+    borderBottomColor: "red",
+  },
+  focusedIncomeInput: {
+    borderBottomColor: Colors.incomeBlue,
   },
 });

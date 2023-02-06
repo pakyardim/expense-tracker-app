@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState } from "react";
 
 export const SingleTransactionContext = createContext({
   transactionDays: [],
@@ -14,6 +14,8 @@ export const SingleTransactionContext = createContext({
   setExpense: () => {},
   setIncome: () => {},
   resetAll: () => {},
+  totalTransactionAmounts: () => {},
+  transactionAmounts: (fullDate) => {},
   updateTransactionHistory: (date, amount, isExpense, category, note) => {},
 });
 
@@ -25,7 +27,14 @@ function SingleTransactionContextProvider({ children }) {
   const [amount, setAmount] = useState(0);
   const [note, setNote] = useState("");
 
-  function updateTransactionHistory( date, fullDate, amount, isExpense, category, note) {
+  function updateTransactionHistory(
+    date,
+    fullDate,
+    amount,
+    isExpense,
+    category,
+    note
+  ) {
     setTransactionDays((prevTransactionDays) => {
       const foundIndex = prevTransactionDays.findIndex(
         (day) => day.fullDate === fullDate
@@ -68,9 +77,42 @@ function SingleTransactionContextProvider({ children }) {
     });
   }
 
-  useEffect(() => {
-    console.log(transactionDays);
-  }, [transactionDays]);
+  function transactionAmounts(fullDate) {
+    const targetDay = transactionDays.find((day) => day.fullDate === fullDate);
+
+    let expenseAmount = 0;
+    let incomeAmount = 0;
+
+    targetDay.transactions.forEach(transaction => {
+      if (transaction.isExpense) {
+        expenseAmount += parseFloat(transaction.amount);
+      } else {
+        incomeAmount += parseFloat(transaction.amount);
+      }
+    });
+    const amounts = {expenseAmount: expenseAmount, incomeAmount: incomeAmount}
+    return amounts
+  }
+
+  function totalTransactionAmounts(){
+    let expenseAmount = 0;
+    let incomeAmount = 0;
+    let total = 0;
+
+    transactionDays.forEach(day => {
+      day.transactions.forEach(transaction => {
+        if (transaction.isExpense) {
+          expenseAmount += parseFloat(transaction.amount);
+        } else {
+          incomeAmount += parseFloat(transaction.amount);
+        }
+      });
+    });
+    
+    total = parseFloat(incomeAmount) - parseFloat(expenseAmount);
+    const amounts = {expenseAmount: expenseAmount, incomeAmount: incomeAmount, total: total} 
+    return amounts
+  }
 
   function changeDate(date) {
     setDate(date);
@@ -117,6 +159,8 @@ function SingleTransactionContextProvider({ children }) {
     setIncome: setIncome,
     changeAmount: changeAmount,
     resetAll: resetAll,
+    totalTransactionAmounts: totalTransactionAmounts,
+    transactionAmounts: transactionAmounts,
     updateTransactionHistory: updateTransactionHistory,
   };
 

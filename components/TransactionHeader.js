@@ -2,10 +2,12 @@ import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Colors from "../constants/colors";
 import { getDayAbbr } from "../functions/dateFormatter";
-import NewTransaction from "./NewTransaction";
 import { useContext } from "react";
+import { SingleTransactionContext } from "../context/singleTransactionContext";
 
-export default function TransactionHeader({ date }) {
+export default function TransactionHeader({ date, fullDate }) {
+  const transactionAmounts = useContext(SingleTransactionContext).transactionAmounts;
+
   let dayName = getDayAbbr(date);
   let mm = date.getMonth() + 1;
   let dd = date.getDate();
@@ -16,7 +18,8 @@ export default function TransactionHeader({ date }) {
 
   const monthYear = `${mm}.${yyyy}`;
 
-  
+  const incomeText = transactionAmounts(fullDate).incomeAmount;
+  const expenseText = transactionAmounts(fullDate).expenseAmount;
 
   return (
     <>
@@ -27,8 +30,8 @@ export default function TransactionHeader({ date }) {
           <Text style={styles.dateMonthYear}>{monthYear}</Text>
         </View>
         <View style={styles.transactions}>
-          <Text style={styles.incomeText}>₺ 0.00</Text>
-          <Text style={styles.expenseText}>₺ 31.23</Text>
+          <Text style={styles.incomeText}>₺ {incomeText}</Text>
+          <Text style={styles.expenseText}>₺ {expenseText}</Text>
         </View>
       </View>
     </>
