@@ -1,7 +1,7 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
 export const SingleTransactionContext = createContext({
-  transactions: [],
+  transactionDays: [],
   date: "",
   isExpense: true,
   category: "",
@@ -18,28 +18,62 @@ export const SingleTransactionContext = createContext({
 });
 
 function SingleTransactionContextProvider({ children }) {
-  const [transactions, setTransactions] = useState([]);
+  const [transactionDays, setTransactionDays] = useState([]);
   const [date, setDate] = useState("");
   const [category, setCategory] = useState("");
   const [isExpense, setIsExpense] = useState(true);
   const [amount, setAmount] = useState(0);
   const [note, setNote] = useState("");
 
-  function updateTransactionHistory(date, amount, isExpense, category, note) {
-    setTransactions((prevTransactions) => [
-      ...prevTransactions,
-      {
-        date: date,
-        amount: amount,
-        isExpense: isExpense,
-        category: category,
-        note: note,
-      },
-    ]);
+  function updateTransactionHistory( date, fullDate, amount, isExpense, category, note) {
+    setTransactionDays((prevTransactionDays) => {
+      const foundIndex = prevTransactionDays.findIndex(
+        (day) => day.fullDate === fullDate
+      );
+      if (foundIndex === -1) {
+        return [
+          {
+            date: date,
+            fullDate: fullDate,
+            transactions: [
+              {
+                amount: amount,
+                isExpense: isExpense,
+                category: category,
+                note: note,
+              },
+            ],
+          },
+          ...prevTransactionDays,
+        ];
+      } else {
+        return prevTransactionDays.map((day, index) => {
+          if (index === foundIndex) {
+            return {
+              ...day,
+              transactions: [
+                ...day.transactions,
+                {
+                  amount: amount,
+                  isExpense: isExpense,
+                  category: category,
+                  note: note,
+                },
+              ],
+            };
+          }
+          return day;
+        });
+      }
+    });
   }
 
-  function changeDate(formattedDate) {
-    setDate(formattedDate);
+  useEffect(() => {
+    console.log(transactionDays);
+  }, [transactionDays]);
+
+  function changeDate(date) {
+    setDate(date);
   }
 
   function changeCategory(category) {
@@ -70,7 +104,7 @@ function SingleTransactionContextProvider({ children }) {
   }
 
   const value = {
-    transactions: transactions,
+    transactionDays: transactionDays,
     date: date,
     category: category,
     amount: amount,

@@ -6,41 +6,34 @@ import {
   TextInput,
   Pressable,
 } from "react-native";
-import { useLayoutEffect, useState, useContext, useEffect } from "react";
+import { useLayoutEffect, useState, useContext } from "react";
 import dateFormatter from "../functions/dateFormatter";
 import CategoriesModal from "../components/categories/CategoriesModal";
 import { SingleTransactionContext } from "../context/singleTransactionContext";
+import { intFormatter } from "../functions/dateFormatter";
 
 export default function AddTransactionScreen({ navigation }) {
   const [visible, setVisible] = useState(false);
 
   const {
-    date,
     category,
     amount,
     isExpense,
     note,
-    changeDate,
-    changeCategory,
     changeNote,
-    setExpense,
-    setIncome,
     changeAmount,
     updateTransactionHistory,
   } = useContext(SingleTransactionContext);
 
 
-  const [selectedOptions, setSelectedOptions] = useState([
-    { id: 0, value: null },
-    { id: 1, value: null },
-  ]);
+  // const [selectedOptions, setSelectedOptions] = useState([
+  //   { id: 0, value: null },
+  //   { id: 1, value: null },
+  // ]);
 
   const today = new Date();
   const formattedToday = dateFormatter(today);
-
-  // function dateChanger(){
-  //   changeDate(formattedToday);
-  // }
+  const intFormattedToday = intFormatter(today);
 
   function openModal() {
     setVisible(true);
@@ -59,13 +52,13 @@ export default function AddTransactionScreen({ navigation }) {
   }
 
   function handlePress(){
-    updateTransactionHistory(today, amount, isExpense, category, note);
+    updateTransactionHistory(today, intFormattedToday, amount, isExpense, category, note);
     navigation.goBack();
   }
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: "Expense",
+      title: isExpense ? "Expense" : "Income",
     });
   }, [navigation]);
 

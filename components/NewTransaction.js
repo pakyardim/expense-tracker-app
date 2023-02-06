@@ -1,12 +1,12 @@
 import { StyleSheet, Text, TextBase, View } from 'react-native'
 import React from 'react'
 
-export default function NewTransaction({category, note, price, isExpense}) {
+export default function NewTransaction({category, note, amount, isExpense}) {
   return (
     <View style={styles.detailContainer}>
         <Text style={styles.category}>{category}</Text>
         <Text style={styles.detailTitle}>{note}</Text>
-        <Text style={styles.transaction}>₺ {price}</Text>
+        <Text style={styles.transaction}>₺ {amount}</Text>
       </View>
   )
 }

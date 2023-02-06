@@ -1,19 +1,39 @@
 import { useContext, useState } from "react";
 import { Button, StyleSheet, FlatList, View } from "react-native";
 import MoneyContainer from "../components/MoneyContainer";
-import TransactionDay from "../components/TransactionDay";
+import TransactionHeader from "../components/TransactionHeader";
 import { SingleTransactionContext } from "../context/singleTransactionContext";
+import { isSameDay } from "../functions/dateFormatter";
+import NewTransaction from "../components/NewTransaction";
+import Colors from "../constants/colors";
 
 export default function TransactionScreen({ navigation }) {
-  const { date, amount, isExpense, category, note, resetAll } = useContext(
-    SingleTransactionContext
-  );
+  const { transactionDays, resetAll } =
+    useContext(SingleTransactionContext);
 
-  function renderTransactions(itemData) {
-    return <TransactionDay />;
+  const renderTransactions = (transactions) => {
+    return transactions.map((transaction) => {
+      return (
+        <NewTransaction
+          key={transaction.note}
+          amount={transaction.amount}
+          isExpense={transaction.isExpense}
+          category={transaction.category}
+          note={transaction.note}
+        />
+      );
+    });
+  };
+
+  function renderTransactionDays(itemData) {
+    return (
+      <View style={styles.dayContainer}>
+        <TransactionHeader date={itemData.item.date} />
+        {renderTransactions(itemData.item.transactions)}
+      </View>
+    );
   }
 
-  //if date.day aynı ise sadece üzerine newTransaction eklesin. Eğer date.day yok ise transaction day eklesin
   function pressHandler() {
     resetAll();
     navigation.navigate("AddTransactionScreen");
@@ -22,9 +42,20 @@ export default function TransactionScreen({ navigation }) {
   return (
     <>
       <MoneyContainer />
-      <TransactionDay dateDay="16" dayName="Mon" monthYear="02.23" />
-      <TransactionDay dateDay="16" dayName="Mon" monthYear="02.23" />
+      <FlatList
+        data={transactionDays}
+        renderItem={renderTransactionDays}
+        keyExtractor={(item) => item.date}
+      />
       <Button title="+" onPress={pressHandler} />
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  dayContainer: {
+    backgroundColor: Colors.primaryBlue,
+    width: "100%",
+    marginBottom: 12,
+  },
+});

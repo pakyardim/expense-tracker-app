@@ -5,7 +5,7 @@ import Category from "./Category";
 import categories from "../../constants/categories";
 import Colors from "../../constants/colors";
 
-export default function CategoriesModal({ visible, openModal, closeModal }) {
+export default function CategoriesModal({ closeModal }) {
 
   function renderCategories(itemData){
     return( 

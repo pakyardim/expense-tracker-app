@@ -1,19 +1,29 @@
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Colors from "../constants/colors";
+import { getDayAbbr } from "../functions/dateFormatter";
 import NewTransaction from "./NewTransaction";
+import { useContext } from "react";
 
+export default function TransactionHeader({ date }) {
+  let dayName = getDayAbbr(date);
+  let mm = date.getMonth() + 1;
+  let dd = date.getDate();
+  let yyyy = date.getFullYear();
 
-export default function TransactionDay({dateDay, dayName, monthYear, price, isExpense}) {
-  const [transactions, setTransactions] = useState([]);
+  if (dd < 10) dd = "0" + dd;
+  if (mm < 10) mm = "0" + mm;
+
+  const monthYear = `${mm}.${yyyy}`;
 
   
+
   return (
-    <View style={styles.dayContainer}>
+    <>
       <View style={styles.overviewContainer}>
         <View style={styles.dateContainer}>
-          <Text style={styles.dateDay}>{dateDay}</Text>
-            <Text style={styles.dayName}>{dayName}</Text>
+          <Text style={styles.dateDay}>{dd}</Text>
+          <Text style={styles.dayName}>{dayName}</Text>
           <Text style={styles.dateMonthYear}>{monthYear}</Text>
         </View>
         <View style={styles.transactions}>
@@ -21,20 +31,11 @@ export default function TransactionDay({dateDay, dayName, monthYear, price, isEx
           <Text style={styles.expenseText}>₺ 31.23</Text>
         </View>
       </View>
-      <NewTransaction category="Entertainment" note="spotify" price="15.75" isExpense={true}/>
-      <NewTransaction category="Food" note="pide" price="45.99" isExpense={true}/>
-      <NewTransaction category="Transportation" note="bursa-istanbul bilet" price="650" isExpense={false}/>
-
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  dayContainer: {
-    backgroundColor: Colors.primaryBlue,
-    width: "100%",
-    marginBottom: 12
-  },
   overviewContainer: {
     borderBottomColor: Colors.borderBlue,
     borderWidth: 1,
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     justifyContent: "flex-start",
     alignItems: "center",
-    flex: 1
+    flex: 1,
   },
   dateDay: {
     fontWeight: "bold",
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 8,
     color: "white",
-    marginRight: 8
+    marginRight: 8,
   },
   dateMonthYear: {
     color: "gray",
@@ -70,13 +71,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    flex: 1
+    flex: 1,
   },
   incomeText: {
     color: Colors.incomeBlue,
-    marginLeft: 16
+    marginLeft: 16,
   },
   expenseText: {
-    color: Colors.expenseRed
-  }
+    color: Colors.expenseRed,
+  },
 });
