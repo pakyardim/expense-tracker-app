@@ -1,12 +1,18 @@
 import {
   StyleSheet,
   Text,
-  Button,
   View,
   TextInput,
   Pressable,
+  Keyboard,
 } from "react-native";
-import { useLayoutEffect, useState, useContext } from "react";
+import {
+  useLayoutEffect,
+  useState,
+  useContext,
+  useRef,
+  useEffect,
+} from "react";
 import dateFormatter from "../functions/dateFormatter";
 import CategoriesModal from "../components/categories/CategoriesModal";
 import { SingleTransactionContext } from "../context/singleTransactionContext";
@@ -16,8 +22,13 @@ import Colors from "../constants/colors";
 import ErrorMsg from "../components/ui/ErrorMsg";
 
 export default function AddTransactionScreen({ navigation }) {
-  const [visible, setVisible] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
+  const inputRefs = useRef([null, null, null]);
+
+  const [visible, setVisible] = useState(true);
+  const [focused, setFocused] = useState([
+    { id: 1, value: false },
+    { id: 2, value: false },
+  ]);
   const [selectedButton, setSelectedButton] = useState("Expense");
   const [showErrorMsg, setShowErrorMsg] = useState(false);
 
@@ -28,23 +39,26 @@ export default function AddTransactionScreen({ navigation }) {
     note,
     changeNote,
     changeAmount,
+    changeCategory,
     setExpense,
     setIncome,
     updateTransactionHistory,
   } = useContext(SingleTransactionContext);
-  
+
   const today = new Date();
   const formattedToday = dateFormatter(today);
   const intFormattedToday = intFormatter(today);
 
   function openModal() {
+    Keyboard.dismiss();
     setVisible(true);
   }
 
   function closeModal() {
+    handleSubmit(0);
     setTimeout(() => {
       setVisible(false);
-    }, 1000);
+    }, 200);
   }
 
   function handleAmountChange(amount) {
@@ -76,20 +90,55 @@ export default function AddTransactionScreen({ navigation }) {
 
   function handleChangePress(title) {
     if (title === "Income") {
-      setIncome();
-      setSelectedButton(title);
+      if (isExpense) {
+        setIncome();
+        setSelectedButton(title);
+        changeCategory("");
+        openModal();
+      }
+    } else if (title === "Expense") {
+      if (!isExpense) {
+        setExpense();
+        setSelectedButton(title);
+        changeCategory("");
+        openModal();
+      }
+    }
+  }
+
+  const handleFocus = (refNum) => {
+    closeModal();
+
+    setFocused(
+      focused.map((item) => {
+        if (item.id == refNum) {
+          return { id: item.id, value: true };
+        }
+        return { id: item.id, value: false };
+      })
+    );
+  };
+
+  function handleBlur(refNum) {
+    setFocused(
+      focused.map((item) => {
+        if (item.id == refNum) {
+          return { id: item.id, value: false };
+        }
+        return { id: item.id, value: false };
+      })
+    );
+  }
+
+  function handleSubmit(index) {
+    if (
+      (index === 0 && amount !== 0) ||
+      (index === 1 && note !== "") ||
+      index === 2
+    ) {
       return;
     }
-    setExpense();
-    setSelectedButton(title);
-  }
-
-  function handleFocus() {
-    setIsFocused(true);
-  }
-
-  function handleBlur() {
-    setIsFocused(false);
+    inputRefs.current[index + 1].focus();
   }
 
   useLayoutEffect(() => {
@@ -124,11 +173,12 @@ export default function AddTransactionScreen({ navigation }) {
         <View style={styles.inputColumn}>
           <Text style={styles.label}>Category</Text>
           <Pressable
-            onFocus={handleFocus}
-            onBlur={handleBlur}
+            ref={(ref) => {
+              inputRefs.current[0] = ref;
+            }}
             style={[
               styles.pressable,
-              isFocused
+              visible
                 ? isExpense
                   ? styles.focusedExpenseInput
                   : styles.focusedIncomeInput
@@ -142,11 +192,16 @@ export default function AddTransactionScreen({ navigation }) {
         <View style={styles.inputColumn}>
           <Text style={styles.label}>Amount</Text>
           <TextInput
-            onBlur={handleBlur}
-            onFocus={handleFocus}
+            ref={(ref) => {
+              inputRefs.current[1] = ref;
+            }}
+            onSubmitEditing={() => handleSubmit(1)}
+            cursorColor={isExpense ? Colors.expenseRed : Colors.incomeBlue}
+            onBlur={() => handleBlur(1)}
+            onFocus={() => handleFocus(1)}
             style={[
               styles.inputText,
-              isFocused
+              focused[0].value
                 ? isExpense
                   ? styles.focusedExpenseInput
                   : styles.focusedIncomeInput
@@ -159,11 +214,16 @@ export default function AddTransactionScreen({ navigation }) {
         <View style={styles.inputColumn}>
           <Text style={styles.label}>Note</Text>
           <TextInput
-            onBlur={handleBlur}
-            onFocus={handleFocus}
+            ref={(ref) => {
+              inputRefs.current[2] = ref;
+            }}
+            onSubmitEditing={() => handleSubmit(2)}
+            cursorColor={isExpense ? Colors.expenseRed : Colors.incomeBlue}
+            onBlur={() => handleBlur(2)}
+            onFocus={() => handleFocus(2)}
             style={[
               styles.inputText,
-              isFocused
+              focused[1].value
                 ? isExpense
                   ? styles.focusedExpenseInput
                   : styles.focusedIncomeInput
