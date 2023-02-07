@@ -13,11 +13,13 @@ import { SingleTransactionContext } from "../context/singleTransactionContext";
 import { intFormatter } from "../functions/dateFormatter";
 import IncomeExpenseBtn from "../components/ui/IncomeExpenseBtn";
 import Colors from "../constants/colors";
+import ErrorMsg from "../components/ui/ErrorMsg";
 
 export default function AddTransactionScreen({ navigation }) {
   const [visible, setVisible] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [selectedButton, setSelectedButton] = useState("Expense");
+  const [showErrorMsg, setShowErrorMsg] = useState(false);
 
   const {
     category,
@@ -57,6 +59,11 @@ export default function AddTransactionScreen({ navigation }) {
   }
 
   function handlePress() {
+    if(amount === NaN || amount === 0 || category === "" || note === ""){
+      setShowErrorMsg(true);
+      console.log("EMPTY BU!!")
+      return;
+    }
     updateTransactionHistory(
       today,
       intFormattedToday,
@@ -182,6 +189,7 @@ export default function AddTransactionScreen({ navigation }) {
           <Text style={{color: isExpense ? "white" : Colors.borderBlue}}>Save</Text>
         </Pressable>
       </View>
+      {showErrorMsg && <ErrorMsg>Please fill all the inputs</ErrorMsg>}
       {visible && (
         <CategoriesModal
           visible={visible}
@@ -258,5 +266,14 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     height: 48,
     backgroundColor: Colors.primaryRed,
+    borderWidth: 1,
+    borderColor: Colors.primaryBlue,
+
+    elevation: 4,
+    shadowColor: "black",
+    shadowOpacity: 0.4,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    overflow: Platform.OS === "android" ? "hidden" : "visible",
   },
 });
