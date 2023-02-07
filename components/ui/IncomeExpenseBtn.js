@@ -1,12 +1,7 @@
 import { StyleSheet, Text, View, Pressable } from "react-native";
 import Colors from "../../constants/colors";
 
-export default function IncomeExpenseBtn({
-  color,
-  selected,
-  children,
-  onPress,
-}) {
+export default function IncomeExpenseBtn({ color, selected, children, onPress }) {
   return (
     <View
       style={[

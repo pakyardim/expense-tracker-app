@@ -1,5 +1,5 @@
-import { useContext, useState } from "react";
-import { Pressable, StyleSheet, FlatList, View, Text } from "react-native";
+import { useContext } from "react";
+import { StyleSheet, FlatList, View, Text } from "react-native";
 import MoneyContainer from "../components/MoneyContainer";
 import TransactionHeader from "../components/TransactionHeader";
 import { SingleTransactionContext } from "../context/singleTransactionContext";

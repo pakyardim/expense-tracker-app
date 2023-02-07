@@ -32,12 +32,7 @@ export default function AddTransactionScreen({ navigation }) {
     setIncome,
     updateTransactionHistory,
   } = useContext(SingleTransactionContext);
-
-  // const [selectedOptions, setSelectedOptions] = useState([
-  //   { id: 0, value: null },
-  //   { id: 1, value: null },
-  // ]);
-
+  
   const today = new Date();
   const formattedToday = dateFormatter(today);
   const intFormattedToday = intFormatter(today);
@@ -47,7 +42,9 @@ export default function AddTransactionScreen({ navigation }) {
   }
 
   function closeModal() {
-    setVisible(false);
+    setTimeout(() => {
+      setVisible(false);
+    }, 1000);
   }
 
   function handleAmountChange(amount) {
@@ -59,9 +56,11 @@ export default function AddTransactionScreen({ navigation }) {
   }
 
   function handlePress() {
-    if(amount === NaN || amount === 0 || category === "" || note === ""){
+    if (amount === NaN || amount === 0 || category === "" || note === "") {
       setShowErrorMsg(true);
-      console.log("EMPTY BU!!")
+      setTimeout(() => {
+        setShowErrorMsg(false);
+      }, 3000);
       return;
     }
     updateTransactionHistory(
@@ -186,10 +185,12 @@ export default function AddTransactionScreen({ navigation }) {
           ]}
           onPress={handlePress}
         >
-          <Text style={{color: isExpense ? "white" : Colors.borderBlue}}>Save</Text>
+          <Text style={{ color: isExpense ? "white" : Colors.borderBlue }}>
+            Save
+          </Text>
         </Pressable>
       </View>
-      {showErrorMsg && <ErrorMsg>Please fill all the inputs</ErrorMsg>}
+      <ErrorMsg isVisible={showErrorMsg}>Please fill all the inputs</ErrorMsg>
       {visible && (
         <CategoriesModal
           visible={visible}

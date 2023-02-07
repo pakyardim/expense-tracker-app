@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Pressable } from "react-native";
 import Colors from "../../constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function AddTransactionBtn({ onPress, children }) {
+export default function AddTransactionBtn({ onPress }) {
   return (
     <View style={styles.buttonOutline}>
       <Pressable onPress={onPress} style={styles.addBtn}>

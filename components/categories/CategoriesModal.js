@@ -1,5 +1,13 @@
-import { StyleSheet, Text, View, FlatList, Modal } from "react-native";
-import { useContext } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  Animated,
+  Dimensions,
+  Easing,
+} from "react-native";
+import { useContext, useEffect, useRef } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Category from "./Category";
 import {
@@ -9,15 +17,56 @@ import {
 import Colors from "../../constants/colors";
 import { SingleTransactionContext } from "../../context/singleTransactionContext";
 
+const { height } = Dimensions.get("window");
+
 export default function CategoriesModal({ closeModal }) {
+  const bottom = useRef(new Animated.Value(0)).current;
   const isExpense = useContext(SingleTransactionContext).isExpense;
 
+  useEffect(() => {
+    showModal();
+  }, [bottom]);
+
+  function showModal() {
+    Animated.timing(bottom, {
+      toValue: 1,
+      duration: 200,
+      easing: Easing.linear(),
+      useNativeDriver: true,
+    }).start();
+  }
+
+  function hideModal() {
+    Animated.timing(bottom, {
+      toValue: 0,
+      duration: 200,
+      easing: Easing.linear(),
+      useNativeDriver: true,
+    }).start();
+
+    closeModal();
+  }
+
   function renderCategories(itemData) {
-    return <Category title={itemData.item.category} onPress={closeModal} />;
+    return <Category title={itemData.item.category} onPress={hideModal} />;
   }
 
   return (
-    <View style={styles.modalView}>
+    <Animated.View
+      style={[
+        styles.modalView,
+        {
+          transform: [
+            {
+              translateY: bottom.interpolate({
+                inputRange: [0, 1],
+                outputRange: [height, height / 2],
+              }),
+            },
+          ],
+        },
+      ]}
+    >
       <View style={styles.header}>
         <Text style={styles.catText}>Category</Text>
         <View style={styles.icons}>
@@ -26,7 +75,7 @@ export default function CategoriesModal({ closeModal }) {
             name="close-outline"
             size={24}
             color="white"
-            onPress={closeModal}
+            onPress={hideModal}
           />
         </View>
       </View>
@@ -37,17 +86,11 @@ export default function CategoriesModal({ closeModal }) {
         renderItem={renderCategories}
         numColumns={3}
       />
-    </View>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "yellow",
-    backgroundColor: "gray",
-  },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -71,7 +114,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.secondaryBlue,
     height: "50%",
     position: "absolute",
-    bottom: 0,
     width: "100%",
     zIndex: 1,
   },

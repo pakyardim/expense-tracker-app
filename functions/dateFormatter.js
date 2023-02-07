@@ -1,10 +1,12 @@
 export default function dateFormatter(today) {
   const yyyy = today.getFullYear();
-  const hour = today.getHours();
-  const min = today.getMinutes();
+  let hour = today.getHours();
+  let min = today.getMinutes();
   let mm = today.getMonth() + 1;
   let dd = today.getDate();
 
+  if (hour < 10) hour = "0" + hour;
+  if (min < 10) min = "0" + min;
   if (dd < 10) dd = "0" + dd;
   if (mm < 10) mm = "0" + mm;
 
@@ -24,7 +26,7 @@ export default function dateFormatter(today) {
   return formattedToday;
 }
 
-export function getDayAbbr(date){
+export function getDayAbbr(date) {
   const days = [
     "Sunday",
     "Monday",
@@ -46,7 +48,7 @@ export function isSameDay(date1, date2) {
   );
 }
 
-export function intFormatter(date){
+export function intFormatter(date) {
   const yyyy = date.getFullYear();
   let mm = date.getMonth() + 1;
   let dd = date.getDate();
