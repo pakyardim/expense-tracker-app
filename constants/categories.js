@@ -1,4 +1,4 @@
-const categories = [
+export const expenseCategories = [
     {id: "c1", category: "Entertainment" },
     {id: "c2", category: "Food" },
     {id: "c3", category: "Social Life" },
@@ -12,4 +12,12 @@ const categories = [
     {id: "c11", category: "Other" },   
 ]
 
-export default categories;
+export const incomeCategories = [
+    {id: "c1", category: "Allowance" },
+    {id: "c2", category: "Salary" },
+    {id: "c3", category: "Petty Cash" },
+    {id: "c4", category: "Bonus" },
+    {id: "c5", category: "Other" },
+]
+
+

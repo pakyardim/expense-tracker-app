@@ -1,10 +1,11 @@
 import { useContext, useState } from "react";
-import { Button, StyleSheet, FlatList, View, Text } from "react-native";
+import { Pressable, StyleSheet, FlatList, View, Text } from "react-native";
 import MoneyContainer from "../components/MoneyContainer";
 import TransactionHeader from "../components/TransactionHeader";
 import { SingleTransactionContext } from "../context/singleTransactionContext";
 import NewTransaction from "../components/NewTransaction";
 import Colors from "../constants/colors";
+import AddTransactionBtn from "../components/ui/AddTransactionBtn";
 
 export default function TransactionScreen({ navigation }) {
   const { transactionDays, resetAll } = useContext(SingleTransactionContext);
@@ -15,7 +16,7 @@ export default function TransactionScreen({ navigation }) {
         <MoneyContainer />
         <View style={styles.noTransactionContainer}>
           <Text style={styles.text}>You have no transactions yet.</Text>
-          <Button title="+" onPress={pressHandler} />
+          <AddTransactionBtn onPress={pressHandler}>+</AddTransactionBtn>
         </View>
       </>
     );
@@ -38,7 +39,10 @@ export default function TransactionScreen({ navigation }) {
   function renderTransactionDays(itemData) {
     return (
       <View style={styles.dayContainer}>
-        <TransactionHeader date={itemData.item.date} fullDate={itemData.item.fullDate}/>
+        <TransactionHeader
+          date={itemData.item.date}
+          fullDate={itemData.item.fullDate}
+        />
         {renderTransactions(itemData.item.transactions)}
       </View>
     );
@@ -57,7 +61,7 @@ export default function TransactionScreen({ navigation }) {
         renderItem={renderTransactionDays}
         keyExtractor={(item) => item.date}
       />
-      <Button title="+" onPress={pressHandler} />
+      <AddTransactionBtn onPress={pressHandler} />
     </>
   );
 }
@@ -68,12 +72,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
   },
-  text:{
-    color: "white"
+  text: {
+    color: "white",
   },
   dayContainer: {
     backgroundColor: Colors.primaryBlue,
     width: "100%",
     marginBottom: 12,
   },
+
 });

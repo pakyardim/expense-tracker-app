@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     },
     expenseTransaction: {
         flex: 1,
-        color: "red",
+        color: Colors.expenseRed,
         textAlign: "right"
     },
     incomeTransaction: {

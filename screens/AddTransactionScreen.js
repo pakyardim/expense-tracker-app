@@ -11,11 +11,13 @@ import dateFormatter from "../functions/dateFormatter";
 import CategoriesModal from "../components/categories/CategoriesModal";
 import { SingleTransactionContext } from "../context/singleTransactionContext";
 import { intFormatter } from "../functions/dateFormatter";
+import IncomeExpenseBtn from "../components/ui/IncomeExpenseBtn";
 import Colors from "../constants/colors";
 
 export default function AddTransactionScreen({ navigation }) {
   const [visible, setVisible] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [selectedButton, setSelectedButton] = useState("Expense");
 
   const {
     category,
@@ -69,9 +71,11 @@ export default function AddTransactionScreen({ navigation }) {
   function handleChangePress(title) {
     if (title === "Income") {
       setIncome();
+      setSelectedButton(title);
       return;
     }
     setExpense();
+    setSelectedButton(title);
   }
 
   function handleFocus() {
@@ -91,8 +95,20 @@ export default function AddTransactionScreen({ navigation }) {
   return (
     <View style={styles.rootContainer}>
       <View style={styles.buttonContainer}>
-        <Button title="Income" onPress={() => handleChangePress("Income")} />
-        <Button title="Expense" onPress={() => handleChangePress("Expense")} />
+        <IncomeExpenseBtn
+          color={Colors.incomeBlue}
+          selected={selectedButton === "Income"}
+          onPress={() => handleChangePress("Income")}
+        >
+          Income
+        </IncomeExpenseBtn>
+        <IncomeExpenseBtn
+          color={Colors.expenseRed}
+          selected={selectedButton === "Expense"}
+          onPress={() => handleChangePress("Expense")}
+        >
+          Expense
+        </IncomeExpenseBtn>
       </View>
       <View style={styles.inputContainer}>
         <View style={styles.inputColumn}>
@@ -151,7 +167,21 @@ export default function AddTransactionScreen({ navigation }) {
           />
         </View>
       </View>
-      <Button title="save" onPress={handlePress} />
+      <View style={styles.addBtnContainer}>
+        <Pressable
+          style={[
+            styles.addBtn,
+            {
+              backgroundColor: isExpense
+                ? Colors.primaryRed
+                : Colors.incomeBlue,
+            },
+          ]}
+          onPress={handlePress}
+        >
+          <Text style={{color: isExpense ? "white" : Colors.borderBlue}}>Save</Text>
+        </Pressable>
+      </View>
       {visible && (
         <CategoriesModal
           visible={visible}
@@ -168,6 +198,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   buttonContainer: {
+    marginTop: 16,
     flexDirection: "row",
     justifyContent: "space-around",
   },
@@ -201,7 +232,7 @@ const styles = StyleSheet.create({
     height: 24,
   },
   redPressable: {
-    borderBottomColor: "red",
+    borderBottomColor: Colors.expenseRed,
   },
   bluePressable: {
     borderBottomColor: "blue",
@@ -210,9 +241,22 @@ const styles = StyleSheet.create({
     color: "white",
   },
   focusedExpenseInput: {
-    borderBottomColor: "red",
+    borderBottomColor: Colors.expenseRed,
   },
   focusedIncomeInput: {
     borderBottomColor: Colors.incomeBlue,
+  },
+  addBtnContainer: {
+    width: "100%",
+    alignItems: "center",
+  },
+  addBtn: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: "70%",
+    maxWidth: 264,
+    borderRadius: 12,
+    height: 48,
+    backgroundColor: Colors.primaryRed,
   },
 });

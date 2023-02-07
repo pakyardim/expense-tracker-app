@@ -1,18 +1,21 @@
 import { StyleSheet, Text, View, FlatList, Modal } from "react-native";
-import React from "react";
+import { useContext } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Category from "./Category";
-import categories from "../../constants/categories";
+import {
+  expenseCategories,
+  incomeCategories,
+} from "../../constants/categories";
 import Colors from "../../constants/colors";
+import { SingleTransactionContext } from "../../context/singleTransactionContext";
 
 export default function CategoriesModal({ closeModal }) {
+  const isExpense = useContext(SingleTransactionContext).isExpense;
 
-  function renderCategories(itemData){
-    return( 
-      <Category title={itemData.item.category} onPress={closeModal}/>
-    )
+  function renderCategories(itemData) {
+    return <Category title={itemData.item.category} onPress={closeModal} />;
   }
-  
+
   return (
     <View style={styles.modalView}>
       <View style={styles.header}>
@@ -27,7 +30,13 @@ export default function CategoriesModal({ closeModal }) {
           />
         </View>
       </View>
-      <FlatList keyExtractor={(item) => item.id} style={styles.categoriesContainer} data={categories} renderItem={renderCategories} numColumns={3} />
+      <FlatList
+        keyExtractor={(item) => item.id}
+        style={styles.categoriesContainer}
+        data={isExpense ? expenseCategories : incomeCategories}
+        renderItem={renderCategories}
+        numColumns={3}
+      />
     </View>
   );
 }
@@ -44,17 +53,17 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 12,
     backgroundColor: "black",
-    alignItems: "center"
+    alignItems: "center",
   },
-  icons:{
+  icons: {
     flexDirection: "row",
     flex: 1,
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   catText: {
     color: "white",
     fontSize: 16,
-    flex: 4
+    flex: 4,
   },
   modalView: {
     backgroundColor: "lightgray",
@@ -64,9 +73,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     width: "100%",
-    zIndex: 1
+    zIndex: 1,
   },
   categoriesContainer: {
     flex: 1,
-  }
+  },
 });
