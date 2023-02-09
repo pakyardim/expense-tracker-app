@@ -20,17 +20,26 @@ import { intFormatter } from "../functions/dateFormatter";
 import IncomeExpenseBtn from "../components/ui/IncomeExpenseBtn";
 import Colors from "../constants/colors";
 import ErrorMsg from "../components/ui/ErrorMsg";
+import DateTimePicker from "react-native-modal-datetime-picker";
 
 export default function AddTransactionScreen({ navigation }) {
+  const [today, setToday] = useState(new Date());
   const inputRefs = useRef([null, null, null]);
 
   const [visible, setVisible] = useState(true);
+  const [dateModalVisible, setDateModalVisible] = useState(false);
+
   const [focused, setFocused] = useState([
     { id: 1, value: false },
     { id: 2, value: false },
   ]);
+
   const [selectedButton, setSelectedButton] = useState("Expense");
   const [showErrorMsg, setShowErrorMsg] = useState(false);
+  const [formattedToday, setFormattedToday] = useState(dateFormatter(today));
+  const [intFormattedToday, setIntFormattedToday] = useState(
+    intFormatter(today)
+  );
 
   const {
     category,
@@ -38,16 +47,13 @@ export default function AddTransactionScreen({ navigation }) {
     isExpense,
     note,
     changeNote,
+    changeDate,
     changeAmount,
     changeCategory,
     setExpense,
     setIncome,
     updateTransactionHistory,
   } = useContext(SingleTransactionContext);
-
-  const today = new Date();
-  const formattedToday = dateFormatter(today);
-  const intFormattedToday = intFormatter(today);
 
   function openModal() {
     Keyboard.dismiss();
@@ -77,6 +83,7 @@ export default function AddTransactionScreen({ navigation }) {
       }, 3000);
       return;
     }
+
     updateTransactionHistory(
       today,
       intFormattedToday,
@@ -85,6 +92,7 @@ export default function AddTransactionScreen({ navigation }) {
       category,
       note
     );
+
     navigation.goBack();
   }
 
@@ -118,6 +126,19 @@ export default function AddTransactionScreen({ navigation }) {
       })
     );
   };
+
+  function hideDatePicker() {
+    setDateModalVisible(false);
+  }
+
+  function handleConfirm(date) {
+    hideDatePicker();
+    changeDate(date);
+    setToday(date);
+
+    setFormattedToday(dateFormatter(date));
+    setIntFormattedToday(intFormatter(date));
+  }
 
   function handleBlur(refNum) {
     setFocused(
@@ -168,7 +189,11 @@ export default function AddTransactionScreen({ navigation }) {
       <View style={styles.inputContainer}>
         <View style={styles.inputColumn}>
           <Text style={styles.label}>Date</Text>
-          <Text style={styles.inputText}>{formattedToday}</Text>
+          <View style={styles.dateInput}>
+            <Pressable onPress={() => setDateModalVisible(true)}>
+              <Text style={styles.dateText}>{formattedToday}</Text>
+            </Pressable>
+          </View>
         </View>
         <View style={styles.inputColumn}>
           <Text style={styles.label}>Category</Text>
@@ -258,6 +283,12 @@ export default function AddTransactionScreen({ navigation }) {
           closeModal={closeModal}
         />
       )}
+      <DateTimePicker
+        isVisible={dateModalVisible}
+        mode="datetime"
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
+      />
     </View>
   );
 }
@@ -292,6 +323,18 @@ const styles = StyleSheet.create({
     borderBottomColor: "gray",
     margin: 12,
     height: 28,
+  },
+  dateText: {
+    color: "white",
+  },
+  dateInput: {
+    flex: 4,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    margin: 12,
+    height: 28,
+    borderBottomWidth: 1,
+    borderBottomColor: "gray",
   },
   pressable: {
     flex: 4,

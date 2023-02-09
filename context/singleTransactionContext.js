@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 export const SingleTransactionContext = createContext({
   transactionDays: [],
@@ -75,6 +75,16 @@ function SingleTransactionContextProvider({ children }) {
         });
       }
     });
+
+    sortTransactionDays();
+  }
+
+  function sortTransactionDays() {
+    setTransactionDays((prevTransactionDays) =>
+      [...prevTransactionDays].sort(
+        (a, b) => b.date.getTime() - a.date.getTime()
+      )
+    );
   }
 
   function transactionAmounts(fullDate) {
@@ -83,24 +93,27 @@ function SingleTransactionContextProvider({ children }) {
     let expenseAmount = 0;
     let incomeAmount = 0;
 
-    targetDay.transactions.forEach(transaction => {
+    targetDay.transactions.forEach((transaction) => {
       if (transaction.isExpense) {
         expenseAmount += parseFloat(transaction.amount);
       } else {
         incomeAmount += parseFloat(transaction.amount);
       }
     });
-    const amounts = {expenseAmount: expenseAmount, incomeAmount: incomeAmount}
-    return amounts
+    const amounts = {
+      expenseAmount: expenseAmount,
+      incomeAmount: incomeAmount,
+    };
+    return amounts;
   }
 
-  function totalTransactionAmounts(){
+  function totalTransactionAmounts() {
     let expenseAmount = 0;
     let incomeAmount = 0;
     let total = 0;
 
-    transactionDays.forEach(day => {
-      day.transactions.forEach(transaction => {
+    transactionDays.forEach((day) => {
+      day.transactions.forEach((transaction) => {
         if (transaction.isExpense) {
           expenseAmount += parseFloat(transaction.amount);
         } else {
@@ -108,10 +121,14 @@ function SingleTransactionContextProvider({ children }) {
         }
       });
     });
-    
+
     total = parseFloat(incomeAmount) - parseFloat(expenseAmount);
-    const amounts = {expenseAmount: expenseAmount, incomeAmount: incomeAmount, total: total} 
-    return amounts
+    const amounts = {
+      expenseAmount: expenseAmount,
+      incomeAmount: incomeAmount,
+      total: total,
+    };
+    return amounts;
   }
 
   function changeDate(date) {
