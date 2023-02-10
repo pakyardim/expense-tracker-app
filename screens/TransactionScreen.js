@@ -1,5 +1,5 @@
-import { useContext } from "react";
-import { StyleSheet, FlatList, View, Text } from "react-native";
+import { useContext, useEffect } from "react";
+import { StyleSheet, FlatList, View, Text, Modal, Button } from "react-native";
 import MoneyContainer from "../components/MoneyContainer";
 import TransactionHeader from "../components/TransactionHeader";
 import { SingleTransactionContext } from "../context/singleTransactionContext";
@@ -9,6 +9,12 @@ import AddTransactionBtn from "../components/ui/AddTransactionBtn";
 
 export default function TransactionScreen({ navigation }) {
   const { transactionDays, resetAll } = useContext(SingleTransactionContext);
+  
+  useEffect(() => {
+    if(transactionDays.length >= 1){
+      console.log(transactionDays[0].transactions);
+    }
+  }, [transactionDays]);
 
   if (transactionDays.length === 0) {
     return (
@@ -16,7 +22,7 @@ export default function TransactionScreen({ navigation }) {
         <MoneyContainer />
         <View style={styles.noTransactionContainer}>
           <Text style={styles.text}>You have no transactions yet.</Text>
-          <AddTransactionBtn onPress={pressHandler}>+</AddTransactionBtn>
+          <AddTransactionBtn onPress={pressHandler} />
         </View>
       </>
     );
@@ -26,7 +32,8 @@ export default function TransactionScreen({ navigation }) {
     return transactions.map((transaction) => {
       return (
         <NewTransaction
-          key={transaction.note}
+          id={transaction.id}
+          key={transaction.id}
           amount={transaction.amount}
           isExpense={transaction.isExpense}
           category={transaction.category}

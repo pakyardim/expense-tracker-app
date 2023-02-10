@@ -14,6 +14,7 @@ export const SingleTransactionContext = createContext({
   setExpense: () => {},
   setIncome: () => {},
   resetAll: () => {},
+  deleteTransaction: (id) => {},
   totalTransactionAmounts: () => {},
   transactionAmounts: (fullDate) => {},
   updateTransactionHistory: (date, amount, isExpense, category, note) => {},
@@ -50,6 +51,7 @@ function SingleTransactionContextProvider({ children }) {
                 isExpense: isExpense,
                 category: category,
                 note: note,
+                id: date.getTime(),
               },
             ],
           },
@@ -67,6 +69,7 @@ function SingleTransactionContextProvider({ children }) {
                   isExpense: isExpense,
                   category: category,
                   note: note,
+                  id: date.getTime(),
                 },
               ],
             };
@@ -78,6 +81,22 @@ function SingleTransactionContextProvider({ children }) {
 
     sortTransactionDays();
   }
+
+  useEffect(() => {
+    console.log(transactionDays)
+  }, [transactionDays])
+
+  function deleteTransaction(id){
+    setTransactionDays((prevTransactionDays) => {
+      return prevTransactionDays.map(day => {
+        day.transactions = day.transactions.filter(transaction => transaction.id !== id);
+        return day;
+      }).filter(day => day.transactions.length > 0)
+    });
+
+    sortTransactionDays();
+  }
+
 
   function sortTransactionDays() {
     setTransactionDays((prevTransactionDays) =>
@@ -175,6 +194,7 @@ function SingleTransactionContextProvider({ children }) {
     setExpense: setExpense,
     setIncome: setIncome,
     changeAmount: changeAmount,
+    deleteTransaction: deleteTransaction,
     resetAll: resetAll,
     totalTransactionAmounts: totalTransactionAmounts,
     transactionAmounts: transactionAmounts,

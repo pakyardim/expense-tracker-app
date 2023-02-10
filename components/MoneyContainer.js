@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View } from "react-native";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import Colors from "../constants/colors";
 import { SingleTransactionContext } from "../context/singleTransactionContext";
 
 export default function MoneyContainer() {
+
   const totalAmounts = useContext(SingleTransactionContext).totalTransactionAmounts();
   const incomeAmount = totalAmounts.incomeAmount;
   const expenseAmount = totalAmounts.expenseAmount;

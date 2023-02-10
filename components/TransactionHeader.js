@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Colors from "../constants/colors";
 import { getDayAbbr } from "../functions/dateFormatter";

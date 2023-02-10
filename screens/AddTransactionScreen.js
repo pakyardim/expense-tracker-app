@@ -6,13 +6,7 @@ import {
   Pressable,
   Keyboard,
 } from "react-native";
-import {
-  useLayoutEffect,
-  useState,
-  useContext,
-  useRef,
-  useEffect,
-} from "react";
+import { useLayoutEffect, useState, useContext, useRef } from "react";
 import dateFormatter from "../functions/dateFormatter";
 import CategoriesModal from "../components/categories/CategoriesModal";
 import { SingleTransactionContext } from "../context/singleTransactionContext";
