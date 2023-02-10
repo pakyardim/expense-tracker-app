@@ -82,10 +82,6 @@ function SingleTransactionContextProvider({ children }) {
     sortTransactionDays();
   }
 
-  useEffect(() => {
-    console.log(transactionDays)
-  }, [transactionDays])
-
   function deleteTransaction(id){
     setTransactionDays((prevTransactionDays) => {
       return prevTransactionDays.map(day => {

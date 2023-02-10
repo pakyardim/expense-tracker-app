@@ -10,12 +10,6 @@ import AddTransactionBtn from "../components/ui/AddTransactionBtn";
 export default function TransactionScreen({ navigation }) {
   const { transactionDays, resetAll } = useContext(SingleTransactionContext);
   
-  useEffect(() => {
-    if(transactionDays.length >= 1){
-      console.log(transactionDays[0].transactions);
-    }
-  }, [transactionDays]);
-
   if (transactionDays.length === 0) {
     return (
       <>
